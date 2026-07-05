@@ -15,12 +15,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    
+
     steps:
     - uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
     - name: Precomp
-      run: chmod +x install-linux-deps.sh
-           ./install-linux-deps.sh
-           npm install -g @tauri-apps/cli@^1.6.0
+      run: |
+        chmod +x install-linux-deps.sh
+        ./install-linux-deps.sh
+        npm install -g @tauri-apps/cli@^1.6.0
     - name: Build autoupdater
       run: cargo build --release --manifest-path autoupdater/Cargo.toml --target x86_64-pc-windows-gnu
     - name: Build
