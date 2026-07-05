@@ -34,3 +34,14 @@ jobs:
       run: cargo build --release -p TeraLauncher
     - name: Build bridge
       run: cargo build --release --manifest-path launcher-bridge/Cargo.toml --target x86_64-pc-windows-gnu
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: tera-launcher-build
+        path: |
+          autoupdater/target/x86_64-pc-windows-gnu/release/
+          launcher-bridge/target/x86_64-pc-windows-gnu/release/
+          src-tauri/target/release/
+          teralaunch/src-tauri/target/release/
+        if-no-files-found: warn
