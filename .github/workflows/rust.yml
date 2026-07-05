@@ -1,0 +1,29 @@
+name: Rust
+
+on:
+  workflow_dispatch: 
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Precomp
+      run: chmod +x install-linux-deps.sh
+           ./install-linux-deps.sh
+           npm install -g @tauri-apps/cli@^1.6.0
+    - name: Build autoupdater
+      run: cargo build --release --manifest-path autoupdater/Cargo.toml --target x86_64-pc-windows-gnu
+    - name: Build
+      run: cargo build --release -p TeraLauncher
+    - name: Build bridge
+      run: cargo build --release --manifest-path launcher-bridge/Cargo.toml --target x86_64-pc-windows-gnu
