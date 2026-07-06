@@ -54,7 +54,8 @@ jobs:
           --exclude='build' \
           --exclude='./node_modules' \
           --exclude='./.git' \
-          --exclude='./.github/actions-cache'
+          --exclude='./.github/actions-cache' \
+          .
 
     - name: Upload filtered archive
       uses: actions/upload-artifact@v4
