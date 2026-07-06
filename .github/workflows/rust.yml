@@ -48,6 +48,12 @@ jobs:
     - name: Compress
       uses: vimtor/action-zip@v1
       with:
-        files: autoupdater/target/x86_64-pc-windows-gnu/release/autoupdater.exe teralaunch/src-tauri/target/release/TeraLauncher launcher-bridge/target/x86_64-pc-windows-gnu/release/launcher-bridge.exe
-        recursive: true
+        files: autoupdater teralaunch launcher-bridge target/release/
+        recursive: false
         dest: tera-launcher.zip
+
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: teralauncher
+        path: tera-launcher.zip
