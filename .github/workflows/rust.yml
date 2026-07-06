@@ -15,33 +15,56 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    
-
     steps:
     - uses: actions/checkout@v4
+    - name: Cache Cargo registry and target
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+
     - name: Precomp
       run: |
         chmod +x install-linux-deps.sh
         ./install-linux-deps.sh
         npm install -g @tauri-apps/cli@^1.6.0
+
     - name: Build autoupdater
       run: cargo build --release --manifest-path autoupdater/Cargo.toml --target x86_64-pc-windows-gnu
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: autoupdater
+        path: autoupdater/target/**/release/*.exe
+        if-no-files-found: warn
+      
     - name: Build
       run: cargo build --release -p TeraLauncher
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: tera-launcher-build
+        path: teralaunch/src-tauri/target/release/*
+        if-no-files-found: warn
+
     - name: Build bridge
       run: cargo build --release --manifest-path launcher-bridge/Cargo.toml --target x86_64-pc-windows-gnu
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: tera-launcher-build
-        path: |
-          autoupdater/target/x86_64-pc-windows-gnu/release/
-          launcher-bridge/target/x86_64-pc-windows-gnu/release/
-          src-tauri/target/release/
-          teralaunch/src-tauri/target/release/
+        name: bridge
+        path: **/target/**/release/*.exe
         if-no-files-found: warn
