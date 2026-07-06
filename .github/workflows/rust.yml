@@ -46,7 +46,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: autoupdater
-        path: autoupdater/target/**/release/*.exe
+        path: autoupdater/target/x86_64-pc-windows-gnu/release/
         if-no-files-found: warn
       
     - name: Build
@@ -56,7 +56,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tera-launcher-build
-        path: teralaunch/src-tauri/target/release/*
+        path: teralaunch/src-tauri/target/release/
         if-no-files-found: warn
 
     - name: Build bridge
@@ -66,5 +66,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: bridge
-        path: launcher-bridge/target/**/release/*.exe
+        path: launcher-bridge/target/x86_64-pc-windows-gnu/release/
         if-no-files-found: warn
