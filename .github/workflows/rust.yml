@@ -41,30 +41,24 @@ jobs:
 
     - name: Build autoupdater
       run: cargo build --release --manifest-path autoupdater/Cargo.toml --target x86_64-pc-windows-gnu
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: autoupdater
-        path: autoupdater/target/x86_64-pc-windows-gnu/release/
-        if-no-files-found: warn
-      
     - name: Build
       run: cargo build --release -p TeraLauncher
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: tera-launcher-build
-        path: teralaunch/src-tauri/target/release/
-        if-no-files-found: warn
-
     - name: Build bridge
       run: cargo build --release --manifest-path launcher-bridge/Cargo.toml --target x86_64-pc-windows-gnu
 
-    - name: Upload build artifacts
+    - name: Create filtered archive of repository
+      run: |
+        tar -czf tera-build.tar.gz \
+          --exclude='./target/x86_64-pc-windows-gnu/release/build' \
+          --exclude='./target/x86_64-pc-windows-gnu/release/deps' \
+          --exclude='build' \
+          --exclude='./node_modules' \
+          --exclude='./.git' \
+          --exclude='./.github/actions-cache'
+
+    - name: Upload filtered archive
       uses: actions/upload-artifact@v4
       with:
-        name: bridge
-        path: launcher-bridge/target/x86_64-pc-windows-gnu/release/
-        if-no-files-found: warn
+        name: tera-launcher-root
+        path: tera-build.tar.gz
+        if-no-files-found: error
