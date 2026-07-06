@@ -45,21 +45,9 @@ jobs:
       run: cargo build --release -p TeraLauncher
     - name: Build bridge
       run: cargo build --release --manifest-path launcher-bridge/Cargo.toml --target x86_64-pc-windows-gnu
-
-    - name: Create filtered archive of repository
-      run: |
-        tar -czf tera-build.tar.gz \
-          --exclude='./target/x86_64-pc-windows-gnu/release/build' \
-          --exclude='./target/x86_64-pc-windows-gnu/release/deps' \
-          --exclude='build' \
-          --exclude='./node_modules' \
-          --exclude='./.git' \
-          --exclude='./.github/actions-cache' \
-          .
-
-    - name: Upload filtered archive
-      uses: actions/upload-artifact@v4
+    - name: Compress
+      uses: vimtor/action-zip@v1
       with:
-        name: tera-launcher-root
-        path: tera-build.tar.gz
-        if-no-files-found: error
+        files: autoupdater/target/x86_64-pc-windows-gnu/release/autoupdater.exe teralaunch/src-tauri/target/release/TeraLauncher launcher-bridge/target/x86_64-pc-windows-gnu/release/launcher-bridge.exe
+        recursive: true
+        dest: tera-launcher.zip
